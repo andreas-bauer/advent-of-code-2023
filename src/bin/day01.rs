@@ -4,7 +4,7 @@ use std::path::Path;
 
 fn main() {
     let mut sum = 0;
-    let lines_result = read_lines("src/bin/input01.txt");
+    let lines_result = read_lines("input/day01.txt");
     let lines = match lines_result {
         Ok(l) => l,
         Err(error) => panic!("Unable to open the file: {:?}", error),
