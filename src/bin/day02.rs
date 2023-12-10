@@ -1,5 +1,6 @@
 use aoc::read_lines;
 use regex::Regex;
+use std::cmp;
 
 const MAX_RED: i32 = 12;
 const MAX_GREEN: i32 = 13;
@@ -15,10 +16,14 @@ fn main() {
     let re_game = Regex::new(r"^Game\s(\d+):").unwrap();
     let re_cubes = Regex::new(r"(\d+) (\w+.?)").unwrap();
     let mut sum_games: i32 = 0;
+    let mut sum_power: i32 = 0;
     for line in lines.into_iter().flatten() {
         let mut reds = 0;
         let mut blues = 0;
         let mut greens = 0;
+        let mut min_reds: i32 = 0;
+        let mut min_blues: i32 = 0;
+        let mut min_greens: i32 = 0;
         let mut is_valid_game: bool = true;
 
         for (_, [count, color_with_sep]) in re_cubes.captures_iter(&line).map(|c| c.extract()) {
@@ -26,9 +31,18 @@ fn main() {
 
             let color: &str = color_with_sep.trim_matches(|c| c == ',' || c == ';');
             match color {
-                "red" => reds += col_count,
-                "blue" => blues += col_count,
-                "green" => greens += col_count,
+                "red" => {
+                    reds += col_count;
+                    min_reds = cmp::max(min_reds, col_count);
+                },
+                "blue" => {
+                    blues += col_count;
+                    min_blues = cmp::max(min_blues, col_count);
+                },
+                "green" => {
+                    greens += col_count;
+                    min_greens = cmp::max(min_greens, col_count);
+                },
                 _ => (),
             }
 
@@ -59,7 +73,10 @@ fn main() {
                 None => println!("Unable to process number"),
             }
         }
+        
+        sum_power += min_reds * min_blues * min_greens;
     }
 
     println!("Sum of valid games: {}", sum_games);
+    println!("Power of valid games: {}", sum_power);
 }
