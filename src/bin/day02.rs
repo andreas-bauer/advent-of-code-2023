@@ -14,7 +14,7 @@ fn main() {
     };
 
     let re_game = Regex::new(r"^Game\s(\d+):").unwrap();
-    let re_cubes = Regex::new(r"(\d+) (\w+.?)").unwrap();
+    let re_cubes = Regex::new(r"(\d+) (\w+)(.)").unwrap();
     let mut sum_games: i32 = 0;
     let mut sum_power: i32 = 0;
     for line in lines.into_iter().flatten() {
@@ -26,10 +26,10 @@ fn main() {
         let mut min_greens: i32 = 0;
         let mut is_valid_game: bool = true;
 
-        for (_, [count, color_with_sep]) in re_cubes.captures_iter(&line).map(|c| c.extract()) {
+        let line_fixed = line + ";";
+        for (_, [count, color, sep]) in re_cubes.captures_iter(&line_fixed).map(|c| c.extract()) {
             let col_count: i32 = count.parse().unwrap_or(0);
 
-            let color: &str = color_with_sep.trim_matches(|c| c == ',' || c == ';');
             match color {
                 "red" => {
                     reds += col_count;
@@ -51,7 +51,7 @@ fn main() {
                 is_valid_game = false;
             }
 
-            let is_put_back = color_with_sep.ends_with(';');
+            let is_put_back = ";" == sep;
             if is_put_back {
                 reds = 0;
                 blues = 0;
@@ -62,7 +62,7 @@ fn main() {
         // Extract game nr only if game is valid
         if is_valid_game {
             let game_cap = re_game
-                .captures(&line)
+                .captures(&line_fixed)
                 .and_then(|cap| cap.get(1))
                 .map(|nr| nr.as_str().parse::<i32>().unwrap());
             match game_cap {
