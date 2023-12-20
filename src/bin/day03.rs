@@ -1,8 +1,7 @@
 use aoc::read_lines;
 use std::cmp;
 
-// const WIDTH: usize=10;
-const HEIGHT: usize= 10;
+const HEIGHT: usize= 140;
 const SPACE: char = '.';
 
 #[derive(PartialEq)]
@@ -10,7 +9,7 @@ struct FoundNum {
     pos_x_start: usize,
     pos_x_end: usize,
     number: i32,
-} 
+}
 
 fn main() {
     let lines_result = read_lines("input/day03.txt");
@@ -18,7 +17,7 @@ fn main() {
         Ok(l) => l,
         Err(error) => panic!("Unable to open the file: {:?}", error),
     };
-   
+
     let mut vec: Vec<Vec<char>> = Vec::with_capacity(HEIGHT);
     for line in lines.into_iter().flatten() {
         vec.push(line.chars().collect());
@@ -31,13 +30,13 @@ fn main() {
 
 fn process_part1(vec: &Vec<Vec<char>>) {
     let mut findings: Vec<FoundNum> = Vec::new();
-    
+
     for y in 0..vec.len() {
         for x in 0..vec[y].len() {
             if !vec[y][x].is_ascii_digit() {
                 continue;
             }
-            
+
             let is_valid = is_valid_num(vec, y, x);
             if is_valid {
                 let found = extract_number(vec, y, x);
@@ -51,7 +50,7 @@ fn process_part1(vec: &Vec<Vec<char>>) {
     let sum: i32 = findings.iter()
         .map(|f| &f.number)
         .sum();
-  
+
     println!("Sum of all found number: {sum}");
 }
 
@@ -59,7 +58,7 @@ fn is_symbol(c: char) -> bool {
     if SPACE == c || c.is_ascii_digit() {
         return false;
     }
-    return true;
+    true
 }
 
 fn is_valid_num(vec: &Vec<Vec<char>>, y: usize, x: usize) -> bool {
@@ -74,12 +73,12 @@ fn is_valid_num(vec: &Vec<Vec<char>>, y: usize, x: usize) -> bool {
                 return true;
             }
         }
-    }    
+    }
 
-    return false;    
+    false
 }
 
-fn extract_number(vec: &Vec<Vec<char>>, y: usize, x: usize) -> FoundNum {
+fn extract_number(vec: &[Vec<char>], y: usize, x: usize) -> FoundNum {
     let mut pos_start: usize = 0;
     for pos in (0..=x).rev() {
         if !vec[y][pos].is_ascii_digit() {
@@ -87,7 +86,7 @@ fn extract_number(vec: &Vec<Vec<char>>, y: usize, x: usize) -> FoundNum {
         }
         pos_start = pos;
     }
-    
+
     let mut pos_end: usize = 0;
     for pos in x..vec[y].len() {
         if !vec[y][pos].is_ascii_digit() {
@@ -99,7 +98,7 @@ fn extract_number(vec: &Vec<Vec<char>>, y: usize, x: usize) -> FoundNum {
     let num_as_str: String = vec[y][pos_start..=pos_end].iter().collect();
     let num = num_as_str.parse::<i32>().unwrap();
 
-    return FoundNum {
+    FoundNum {
         pos_x_start: pos_start,
         pos_x_end: pos_end,
         number: num
