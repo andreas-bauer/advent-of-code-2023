@@ -3,6 +3,7 @@ use std::cmp;
 
 const HEIGHT: usize= 140;
 const SPACE: char = '.';
+const GEAR: char = '*';
 
 #[derive(PartialEq)]
 struct FoundNum {
@@ -23,7 +24,10 @@ fn main() {
         vec.push(line.chars().collect());
     }
 
+    println!("=== PART 1 ===");
     process_part1(&vec);
+    println!("=== PART 2 ===");
+    process_part2(&vec);
 }
 
 
@@ -54,6 +58,30 @@ fn process_part1(vec: &Vec<Vec<char>>) {
     println!("Sum of all found number: {sum}");
 }
 
+fn process_part2(vec: &Vec<Vec<char>>) {
+
+    let mut gears_prod: Vec<i32> = Vec::new();
+    for y in 0..vec.len() {
+        for x in 0..vec[y].len() {
+            let c: char = vec[y][x];
+            if c != GEAR {
+                continue;
+            }
+
+            let connected = connected_numbers(vec, y, x);
+            if connected.len() >= 2 {
+                let prod: i32 = connected.iter()
+                    .map(|f| f.number)
+                    .product();
+                gears_prod.push(prod);
+            }
+        }
+    }
+
+    let sum: i32 = gears_prod.iter().sum();
+    println!("Sum of all gear products: {sum}");
+}
+
 fn is_symbol(c: char) -> bool {
     if SPACE == c || c.is_ascii_digit() {
         return false;
@@ -76,6 +104,26 @@ fn is_valid_num(vec: &Vec<Vec<char>>, y: usize, x: usize) -> bool {
     }
 
     false
+}
+
+fn connected_numbers (vec: &[Vec<char>], y: usize, x: usize) -> Vec<FoundNum> {
+    let y_min: usize = y.checked_sub(1).unwrap_or(y);
+    let y_max: usize = cmp::min(y + 1, vec.len() -1);
+    let x_min: usize = x.checked_sub(1).unwrap_or(x);
+    let x_max: usize = cmp::min(x + 1, vec[y_min].len() -1);
+
+    let mut result: Vec<FoundNum> = Vec::new();
+    for iy in y_min..=y_max {
+        for ix in x_min..=x_max {
+            if vec[iy][ix].is_ascii_digit() {
+                let found = extract_number(vec, iy, ix);
+                result.push(found);
+            }
+        }
+    }
+
+    result.dedup();
+    result
 }
 
 fn extract_number(vec: &[Vec<char>], y: usize, x: usize) -> FoundNum {
