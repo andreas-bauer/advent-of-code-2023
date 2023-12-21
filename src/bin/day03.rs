@@ -1,7 +1,7 @@
 use aoc::read_lines;
 use std::cmp;
 
-const HEIGHT: usize= 140;
+const HEIGHT: usize = 140;
 const SPACE: char = '.';
 const GEAR: char = '*';
 
@@ -30,8 +30,6 @@ fn main() {
     process_part2(&vec);
 }
 
-
-
 fn process_part1(vec: &Vec<Vec<char>>) {
     let mut findings: Vec<FoundNum> = Vec::new();
 
@@ -51,15 +49,12 @@ fn process_part1(vec: &Vec<Vec<char>>) {
 
     findings.dedup();
 
-    let sum: i32 = findings.iter()
-        .map(|f| &f.number)
-        .sum();
+    let sum: i32 = findings.iter().map(|f| &f.number).sum();
 
     println!("Sum of all found number: {sum}");
 }
 
 fn process_part2(vec: &Vec<Vec<char>>) {
-
     let mut gears_prod: Vec<i32> = Vec::new();
     for y in 0..vec.len() {
         for x in 0..vec[y].len() {
@@ -70,9 +65,7 @@ fn process_part2(vec: &Vec<Vec<char>>) {
 
             let connected = connected_numbers(vec, y, x);
             if connected.len() >= 2 {
-                let prod: i32 = connected.iter()
-                    .map(|f| f.number)
-                    .product();
+                let prod: i32 = connected.iter().map(|f| f.number).product();
                 gears_prod.push(prod);
             }
         }
@@ -91,9 +84,9 @@ fn is_symbol(c: char) -> bool {
 
 fn is_valid_num(vec: &Vec<Vec<char>>, y: usize, x: usize) -> bool {
     let y_min: usize = y.checked_sub(1).unwrap_or(y);
-    let y_max: usize = cmp::min(y + 1, vec.len() -1);
+    let y_max: usize = cmp::min(y + 1, vec.len() - 1);
     let x_min: usize = x.checked_sub(1).unwrap_or(x);
-    let x_max: usize = cmp::min(x + 1, vec[y_min].len() -1);
+    let x_max: usize = cmp::min(x + 1, vec[y_min].len() - 1);
 
     for iy in y_min..=y_max {
         for ix in x_min..=x_max {
@@ -106,11 +99,11 @@ fn is_valid_num(vec: &Vec<Vec<char>>, y: usize, x: usize) -> bool {
     false
 }
 
-fn connected_numbers (vec: &[Vec<char>], y: usize, x: usize) -> Vec<FoundNum> {
+fn connected_numbers(vec: &[Vec<char>], y: usize, x: usize) -> Vec<FoundNum> {
     let y_min: usize = y.checked_sub(1).unwrap_or(y);
-    let y_max: usize = cmp::min(y + 1, vec.len() -1);
+    let y_max: usize = cmp::min(y + 1, vec.len() - 1);
     let x_min: usize = x.checked_sub(1).unwrap_or(x);
-    let x_max: usize = cmp::min(x + 1, vec[y_min].len() -1);
+    let x_max: usize = cmp::min(x + 1, vec[y_min].len() - 1);
 
     let mut result: Vec<FoundNum> = Vec::new();
     for iy in y_min..=y_max {
@@ -149,6 +142,6 @@ fn extract_number(vec: &[Vec<char>], y: usize, x: usize) -> FoundNum {
     FoundNum {
         pos_x_start: pos_start,
         pos_x_end: pos_end,
-        number: num
+        number: num,
     }
 }

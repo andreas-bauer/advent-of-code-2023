@@ -34,15 +34,15 @@ fn main() {
                 "red" => {
                     reds += col_count;
                     min_reds = cmp::max(min_reds, col_count);
-                },
+                }
                 "blue" => {
                     blues += col_count;
                     min_blues = cmp::max(min_blues, col_count);
-                },
+                }
                 "green" => {
                     greens += col_count;
                     min_greens = cmp::max(min_greens, col_count);
-                },
+                }
                 _ => (),
             }
 
@@ -73,7 +73,7 @@ fn main() {
                 None => println!("Unable to process number"),
             }
         }
-        
+
         sum_power += min_reds * min_blues * min_greens;
     }
 
