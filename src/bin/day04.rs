@@ -1,6 +1,7 @@
 use aoc::read_lines;
 
 const SEPARATOR: char = '|';
+const MAX_CARDS: usize = 223;
 
 #[derive(Debug, PartialEq)]
 struct Card {
@@ -8,6 +9,13 @@ struct Card {
     winners: Vec<u32>,
     mine: Vec<u32>,
 }
+
+#[derive(Debug, PartialEq)]
+struct CardWins {
+    id: u32,
+    diff: Vec<u32>,
+}
+
 
 fn main() {
     let lines_result = read_lines("input/day04.txt");
@@ -23,6 +31,8 @@ fn main() {
 
     println!("=== PART 1 ===");
     process_part1(&cards);
+    println!("=== PART 2 ===");
+    process_part2(&cards);
 }
 
 fn parse_to_card(input: &str) -> Card {
@@ -77,5 +87,31 @@ fn process_part1(cards: &Vec<Card>) {
     }
 
     println!("Sum of all scores = {sum}");
+}
+
+fn process_part2(cards: &Vec<Card>) {
+    let mut card_wins: [u32; MAX_CARDS] = [0;MAX_CARDS];
+    for card in cards {
+        let mine = card.mine.clone();
+        let diff: Vec<_> = mine.into_iter()
+            .filter(|num| card.winners.contains(num))
+            .collect();
+
+        let start = usize::try_from(card.id).unwrap() -1;
+        card_wins[start] += 1;
+
+        if diff.is_empty() {
+            continue;
+        }
+
+        let copies = card_wins[start];
+        for i in start+1..=start+diff.len() {
+            card_wins[i] += copies;
+        }
+
+    }
+
+    let sum: u32 = card_wins.iter().sum();
+    println!("Sum of won cards = {sum}");
 }
 
