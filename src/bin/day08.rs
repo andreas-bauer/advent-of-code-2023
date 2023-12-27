@@ -8,9 +8,6 @@ enum Dir {
     R = 1,
 }
 
-const START: &str = "AAA";
-const GOAL: &str = "ZZZ";
-
 fn main() {
     let lines = match read_lines("input/day08.txt") {
         Ok(l) => l,
@@ -42,6 +39,13 @@ fn main() {
 
         maps.insert(id, (l, r));
     }
+
+    process_part1(&maps, &dirs);
+}
+
+fn process_part1(maps: &HashMap<&str, (&str, &str)>, dirs: &Vec<Dir>) {
+    const START: &str = "AAA";
+    const GOAL: &str = "ZZZ";
 
     let mut counter: usize = 0;
     let mut last = START;
